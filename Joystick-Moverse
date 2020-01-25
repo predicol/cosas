@@ -1,0 +1,91 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.AI;
+using UnityEngine.EventSystems;
+using UnityEngine.Animations;
+
+
+
+
+public class movimiento : MonoBehaviour
+{
+
+    //Creamos Variable para Joystick
+    protected Joystick ControlMovil;
+    protected bool presionado;
+
+    //Declarar NavMeshAgent
+    private NavMeshAgent _Controlador;
+    //Declaro Flotante de velocidad
+    public float _velocidad = 4.0f;
+
+    //Declaro gravedad
+    public float _Gravedad = 9.81f;
+
+    //
+    public Animator _Animador;
+
+    void Start()
+    {
+        //Lo primero es buscar el controlador
+        _Controlador = GetComponent<NavMeshAgent>();
+        //Luego buscamos el joistik
+        ControlMovil = FindObjectOfType<Joystick>();
+        //Recupero el componente animator
+        _Animador = GetComponent<Animator>();
+       
+    }
+
+
+    void Update()
+    {
+        //Dinamica de Movimiento
+        //Declaro los controles del vector de movimiento
+        Vector3 Direccion = new Vector3(ControlMovil.Horizontal, 0.0f, ControlMovil.Vertical);
+        //Velocidad por direccion
+        Vector3 Velocidad = Direccion * _velocidad;
+        //le digo al NavmeshAgent que se mueva atravez del tiempo
+        _Controlador.Move(Velocidad * Time.deltaTime);
+
+        //Dinamica de rotacion
+
+         if(Direccion != Vector3.zero)
+        {
+            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(Direccion), 0.15f);
+        }
+
+        //Dinamica de animacion
+
+       // if (Input.GetKeyDown(KeyCode.Space))
+        //{
+
+          //  _Animador.Play("brincar");
+        //}
+
+        if (ControlMovil.Horizontal !=0 || ControlMovil.Vertical != 0)
+        {
+            _Animador.Play("a_Walking");
+
+
+        }
+        else
+        {
+            _Animador.Play("a_Idle");
+
+        }
+
+
+
+    }
+
+    public void OnPointerDown(PointerEventData eventData)
+    {
+        presionado = true;
+    }
+
+    public void OnPointerUp(PointerEventData eventData)
+    {
+        presionado = false;
+
+    }
