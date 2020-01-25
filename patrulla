@@ -1,0 +1,59 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.AI;
+
+public class Patrulla : MonoBehaviour
+{
+
+    //declaro mi controlador
+    private NavMeshAgent Controlador;
+    public Transform[] puntos;
+    private int PuntoDeDestino = 0;
+
+
+
+
+
+
+
+
+    void Start()
+    {
+        //Recuperar el componente NavMesh
+        Controlador = GetComponent<NavMeshAgent>();
+
+        IrAlSiguientePunto();
+
+
+
+
+    }
+
+    //Creamos una funcion
+    void IrAlSiguientePunto()
+    {
+        //Retorna o no hace nada si no hay puntos configurados
+        if (puntos.Length == 0)
+            return;
+
+        //Envia el agente al siguiente ppunto de destino
+        Controlador.destination = puntos[PuntoDeDestino].position;
+
+
+        //Tomo el siguiente punto de destino en el array
+        //devolviendonos al inicio de ser necesario
+        PuntoDeDestino = (PuntoDeDestino + 1) % puntos.Length;
+
+    }
+
+
+    void Update()
+    {
+        //Elije el proximo punto de destino cuando este cerca del que tiene en funcion
+        if(!Controlador.pathPending && Controlador.remainingDistance < 0.5)
+        {
+            IrAlSiguientePunto();
+        }
+    }
+}
