@@ -1,0 +1,39 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.AI;
+using UnityEngine.Animations;
+
+
+
+public class MoverEnClick : MonoBehaviour
+{
+    private NavMeshAgent Controlador;
+    public Animator _Animador;
+
+
+
+
+    void Start()
+    {
+        Controlador = GetComponent<NavMeshAgent>();
+        _Animador = GetComponent<Animator>();
+    }
+
+    void Update()
+    {
+        //Si presiono el boton izquierdo del mouse
+        if (Input.GetMouseButtonDown(0))
+        {
+            RaycastHit Hit;
+            if(Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out Hit, 100))
+            {
+                Controlador.destination = Hit.point;
+                _Animador.Play("a_Walking");
+
+
+            }
+
+        }
+    }
+}
